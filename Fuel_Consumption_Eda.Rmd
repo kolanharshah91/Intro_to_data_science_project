@@ -137,3 +137,41 @@ list_2 <- c("Engine.kW..At.the.wheels..kW.", "Horsepower..At.the.wheels..hp.",
 
 **Intake Air Temperature(°C):** This measures the temperature of the air entering the engine. Cooler air is denser, which can affect combustion efficiency and fuel consumption.
 
+
+```{r}
+library(ggplot2)
+# Define the label
+label <- 'Fuel_mass'
+
+# Create a histogram using ggplot
+ggplot(data_1, aes(x = as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]]))))) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(x = label, y = "Frequency") +
+  theme_minimal()
+
+# Print the minimum and maximum values
+cat("Minimum Value:", min(as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]])))), "\n")
+cat("Maximum Value:", max(as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]])))), "\n")
+```
+**From the above plot we can see that the distribution has a long right tail, which means that there are relatively few extreme values or outliers on the high end of fuel consumption. These outliers represent instances where fuel consumption is significantly higher than the majority of observations.**
+
+```{r}
+# library
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+
+# Start with your dataset 'datset'
+datset <- data_1
+varaiable <- "Torque.Nm."
+p <- datset %>%
+  mutate(!!sym(varaiable) := ifelse(is.na(!!sym(varaiable)), 0, !!sym(varaiable))) %>%
+  mutate(bin = cut(!!sym(varaiable), breaks = 4)) %>%
+  ggplot(aes(x = bin, y = Fuel_mass)) +
+  geom_boxplot(fill = "blue") +
+  theme_minimal() +
+  xlab("Torque.Nm. Bins")
+
+# Show the plot
+print(p)
+```
