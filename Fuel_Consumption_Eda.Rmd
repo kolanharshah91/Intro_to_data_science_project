@@ -175,3 +175,93 @@ p <- datset %>%
 # Show the plot
 print(p)
 ```
+
+```{r}
+# Create a vector containing the column names want to process
+trimmable_parameters <- c("Torque.Nm.", "CO..in.g.km..Average..g.km.", "Trip.Distance.km.", "Run.time.since.engine.start.s.", "Fuel.cost..trip..cost.", "Engine.Coolant.Temperature..C.", "Litres.Per.100.Kilometer.Long.Term.Average..l.100km.", "Trip.Time.Since.journey.start..s.", "Trip.time.whilst.moving..s.", "Trip.average.KPL.kpl.", "Fuel.Trim.Bank.1.Long.Term...", "O2.Volts.Bank.1.sensor.1.V.", "O2.Volts.Bank.1.sensor.2.V.", "Fuel.flow.rate.hour.gal.hr.", "Fuel.flow.rate.minute.gal.min.", "Fuel.Remaining..Calculated.from.vehicle.profile....", "Horizontal.Dilution.of.Precision", "Acceleration.Sensor.Total..g.", "Acceleration.Sensor.X.axis..g.", "Acceleration.Sensor.Y.axis..g.", "Acceleration.Sensor.Z.axis..g.", "Speed..OBD..km.h.", "Trip.time.whilst.stationary..s.")
+
+
+# Create an empty list to store the plots
+plot_list <- list()
+dataset <- data_1
+# Loop through the vector of column names
+for (variable in trimmable_parameters) {
+  
+  # Replace NA with zero in the dataset for the current column
+  dataset <- dataset %>%
+    mutate(!!sym(variable) := ifelse(is.na(!!sym(variable)), 0, !!sym(variable))) 
+  
+  # Create bins for the current column
+  dataset <- dataset %>%
+    mutate(bin = cut(!!sym(variable), breaks = 4))
+  
+  # Create a boxplot for the current column
+  p <- ggplot(data = dataset, aes(x = bin, y = Fuel_mass)) +
+    geom_boxplot(fill = "#69b3a2") +
+    theme_minimal() +
+    xlab(variable)
+  
+  # Store the plot in the list
+  plot_list[[variable]] <- p
+}
+
+# Print or display the plots from the list
+for (i in 1:length(plot_list)) {
+  print(plot_list[[i]])
+}
+```
+
+For the below columns, convert time values in seconds to minutes for the following columns:
+1) Run.time.since.engine.start.s.
+2) Trip.Time.Since.journey.start..s.
+3) Trip.time.whilst.moving..s.
+4) Trip.time.whilst.stationary..s.
+
+```{r}
+data_1 <- data_1 %>%
+  mutate(Run.time.since.engine.start.s.mins = Run.time.since.engine.start.s. / 60)
+
+data_1 <- data_1 %>%
+  mutate(Trip.Time.Since.journey.start..s.mins = Trip.Time.Since.journey.start..s. / 60)
+
+data_1 <- data_1 %>%
+  mutate(Trip.time.whilst.moving..s.mins = Trip.time.whilst.moving..s. / 60)
+
+data_1 <- data_1 %>%
+  mutate(Trip.time.whilst.stationary..s.mins = Trip.time.whilst.stationary..s. / 60)
+
+```
+
+```{r}
+# Create a vector containing the column names you want to process
+Trip_sec_to_minutes<- c("Run.time.since.engine.start.s.mins","Trip.Time.Since.journey.start..s.mins","Trip.time.whilst.moving..s.mins","Trip.time.whilst.stationary..s.mins")
+
+# Create an empty list to store the plots
+plot_list <- list()
+dataset <- data_1
+# Loop through the vector of column names
+for (variable in Trip_sec_to_minutes) {
+  
+  # Replace NA with zero in the dataset for the current column
+  dataset <- dataset %>%
+    mutate(!!sym(variable) := ifelse(is.na(!!sym(variable)), 0, !!sym(variable))) 
+  
+  # Create bins for the current column
+  dataset <- dataset %>%
+    mutate(bin = cut(!!sym(variable), breaks = 4))
+  
+  # Create a boxplot for the current column
+  p <- ggplot(data = dataset, aes(x = bin, y = Fuel_mass)) +
+    geom_boxplot(fill = "#69b3a2") +
+    theme_minimal() +
+    xlab(variable)
+  
+  # Store the plot in the list
+  plot_list[[variable]] <- p
+}
+
+# Print or display the plots from the list
+for (i in 1:length(plot_list)) {
+  print(plot_list[[i]])
+}
+```
