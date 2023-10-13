@@ -1,0 +1,97 @@
+---
+title: "EDA_Analysis"
+output: html_document
+date: "2023-10-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Trimmable Parameters
+
+Trimmable parameters typically refer to settings, configurations, or variables that can be adjusted or fine-tuned within a system, process, or software application. The term "trimmable" implies that these parameters are adjustable in a way that allows for optimization or customization to achieve desired outcomes.
+
+1)Torque (Nm): Torque is a measure of the engine's rotational force. It is an important factor in determining the engine's performance and efficiency.
+Torque (Nm) wrt fmc: Higher torque can allow the engine to perform tasks with less effort, potentially leading to more efficient fuel consumption.[Does not follow].
+
+**Analysis**: As per the boxplot observed, the variable 'Torque (Nm)' is not aligned with the description.
+
+2)CO₂ in g/km (Average): This column represents the average amount of carbon dioxide emissions produced per kilometer driven. It is a direct measure of the environmental impact of the engine's operation.
+CO₂ in g/km (Average): Lower emissions often correlate with better fuel efficiency, as it indicates that the engine is burning fuel more effectively.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'CO₂ in g/km (Average)' is aligned with the parametric description.
+
+3)Trip Distance (km): This is the total distance covered during a specific trip.
+Trip Distance (km): Longer trips may lead to more consistent engine operation, potentially resulting in better fuel efficiency compared to many short trips.[Follows]
+
+**Analysis**: As per the boxplot observed, the variable 'Trip Distance (km)' is aligned with the parametric description.
+
+4)Run Time Since Engine Start (s): It represents the duration for which the engine has been running since it was last started.
+Run Time Since Engine Start (s): Engines tend to be less fuel-efficient during the first few minutes after start-up due to cold engine conditions.[Follows]
+
+**Analysis**: As per the boxplot observed, the variable 'Run Time Since Engine Start (s)' is aligned with the parametric description.
+
+5)Trip Time (Since Journey Start) (s): It shows the total time elapsed since the start of the trip.
+Trip Time (Since Journey Start) (s): Longer trips may lead to more efficient engine operation compared to numerous short trips.[Follows]
+
+**Analysis**: As per the boxplot observed, the variable 'Run Time Since Engine Start (s)' is aligned with the parametric description.
+
+6)Trip Time (Whilst Moving) (s): This is the total time during the trip when the vehicle was in motion.
+Trip Time (Whilst Moving) (s): Longer durations of movement can lead to more consistent engine operation, potentially resulting in better fuel efficiency.[Follows]
+
+**Analysis**: As per the boxplot observed, the variable 'Trip Time (Whilst Moving) (s)' is aligned with the parametric description.
+
+7)Trip Time (Whilst Stationary) (s): This is the total time during the trip when the vehicle was stationary.
+Trip Time (Whilst Stationary) (s): Idling for extended periods can lead to unnecessary fuel consumption and reduced overall efficiency.
+
+**Analysis**: As per the boxplot observed, the variable 'Trip Time (Whilst Stationary) (s)' is aligned with the parametric description.
+
+8)Engine Coolant Temperature (°C): It indicates the temperature of the engine coolant, which is important for engine performance and efficiency.
+Engine Coolant Temperature (°C): A properly warmed-up engine (within optimal temperature range) tends to operate more efficiently, leading to better fuel economy.
+
+**Analysis**:Follows the trend but however we see the presence of outliers in the last bin.
+
+9)Trip Average KPL (kpl): This represents the average kilometers per liter of fuel consumed during the trip.
+Trip Average KPL (kpl): Higher average kilometers per liter indicates better fuel efficiency.
+**Analysis**:Follows the trend but however we see the presence of outliers in the last bin.
+
+10)O2 Volts Bank 1 Sensor 1 (V): This is the voltage output of the first oxygen sensor in Bank 1.
+O2 Volts Bank 1 Sensor 1 (V): This sensor provides feedback on the air-fuel mixture. Proper mixture leads to better fuel economy.
+**Analysis**:Follows the trend, we would suggest 0.482-0.966 air fuel mixture which is provided by the sensor.
+
+11)O2 Volts Bank 1 Sensor 2 (V): Similar to the previous parameter, but for the second oxygen sensor in Bank 1.
+O2 Volts Bank 1 Sensor 2 (V): Similar to the first oxygen sensor, this feedback helps maintain proper air-fuel mixture for better fuel economy.[Not following]
+**Analysis**:As the unit is the same of that of the O2 Volts Bank 1 Sensor 1 the trend is not following in this case.
+
+12)Fuel Flow Rate/Hour (gal/hr): This represents the rate at which fuel is being consumed, measured in gallons per hour.
+Fuel Flow Rate/Hour (gal/hr): Monitoring fuel flow rate helps identify anomalies that may indicate inefficiencies or problems affecting fuel consumption.[Following]
+
+**Analysis**:No anomalies as this is the base for creating the fuel mass column.
+
+14)Fuel Flow Rate/Minute (gal/min): Similar to the previous parameter, but measured in gallons per minute.
+Fuel Flow Rate/Minute (gal/min): Similar to the above, this provides a finer-grained look at fuel consumption.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'Fuel Flow Rate/Minute (gal/min)' is aligned with the parametric description.
+
+15)Horizontal Dilution of Precision: This is a measure of the quality of the GPS signal, which can affect the accuracy of distance measurements.
+Horizontal Dilution of Precision: A more accurate GPS signal can help optimize routes and driving behavior for improved fuel economy.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'Horizontal Dilution of Precision' is aligned with the parametric description.
+
+16)Acceleration Sensor (X axis) (g): This is the acceleration experienced along the X axis (usually lateral or side-to-side movement).
+Acceleration Sensor (X axis) (g): Lateral accelerations can be indicative of aggressive cornering, potentially leading to higher fuel consumption.[Following]
+Analysis: The reason that it is following because higher the value, the assumption is that the person has done cornering of the vehicle.
+
+**Analysis**: As per the boxplot observed, the variable 'Acceleration Sensor (X axis) (g)' is aligned with the parametric description.
+
+17)Acceleration Sensor (X axis) (g): This is the acceleration experienced along the X axis (usually lateral or side-to-side movement).
+Acceleration Sensor (X axis) (g): Lateral accelerations can be indicative of aggressive cornering, potentially leading to higher fuel consumption.[folowing]
+Analysis:The reason that is the ore the forward/backward motion, more power which leads to more fuel consumption.
+
+**Analysis**: As per the boxplot observed, the variable 'Acceleration Sensor (X axis) (g)' is aligned with the parametric description.
+
+18)Speed (OBD) (km/h): This represents the vehicle's speed, as measured by the On-Board Diagnostics system.
+Speed (OBD) (km/h): Higher speeds generally lead to increased air resistance, which can significantly impact fuel consumption.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'Speed (OBD) (km/h)' is aligned with the parametric description.
