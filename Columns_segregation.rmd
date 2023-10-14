@@ -192,5 +192,32 @@ non_trimmable_parameters <- c('GPS_Time',
                               'Voltage_(OBD_Adapter)(V)'
                               )
 
+#Trimmable Paremeters:(Which Follows Description):
+CO₂ in g/km (Average)
+Trip Distance (km)
+Run Time Since Engine Start (s)
+Trip Time (Since Journey Start) (s
+Trip Time (Whilst Moving) (s)
+Trip Time (Whilst Stationary) (s)
+Engine Coolant Temperature (°C)
+Trip Average KPL (kpl)
+O2 Volts Bank 1 Sensor 1 (V)
+O2 Volts Bank 1 Sensor 2 (V)
+Fuel Flow Rate/Hour (gal/hr)
+
+#Non-Trimmable Parameters:(Which Follows Description):
+Engine kW (At the wheels)
+Horsepower..At.the.wheels..hp.
+Trip average Litres/100 Km
+Absolute Throttle Position B(%)
+Relative Throttle Position (B%)
+Accelerator Pedal position both E and D(%)
+Throttle.Position.Manifold...
+Kilometers Per Litre(Instant)(kpl)
+Miles per Gallon(Long Term Average)(mpg)
+G(X)
+Miles per Gallon
+Engine Rpm(Following with inconsisteny)
+Intake Air Temperature (same as above)
 
     
