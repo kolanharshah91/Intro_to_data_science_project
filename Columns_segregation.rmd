@@ -192,32 +192,27 @@ non_trimmable_parameters <- c('GPS_Time',
                               'Voltage_(OBD_Adapter)(V)'
                               )
 
-#Trimmable Paremeters:(Which Follows Description):
-CO₂ in g/km (Average)
-Trip Distance (km)
-Run Time Since Engine Start (s)
-Trip Time (Since Journey Start) (s
-Trip Time (Whilst Moving) (s)
-Trip Time (Whilst Stationary) (s)
-Engine Coolant Temperature (°C)
-Trip Average KPL (kpl)
-O2 Volts Bank 1 Sensor 1 (V)
-O2 Volts Bank 1 Sensor 2 (V)
-Fuel Flow Rate/Hour (gal/hr)
-
-#Non-Trimmable Parameters:(Which Follows Description):
-Engine kW (At the wheels)
-Horsepower..At.the.wheels..hp.
-Trip average Litres/100 Km
-Absolute Throttle Position B(%)
-Relative Throttle Position (B%)
-Accelerator Pedal position both E and D(%)
-Throttle.Position.Manifold...
-Kilometers Per Litre(Instant)(kpl)
-Miles per Gallon(Long Term Average)(mpg)
-G(X)
-Miles per Gallon
-Engine Rpm(Following with inconsisteny)
-Intake Air Temperature (same as above)
+# Trimmable Parameters
+trimmable_parameters <- c(
+  "CO₂ in g/km (Average)",
+  "Trip Distance (km)",
+  "Run Time Since Engine Start (s)",
+  "Trip Time (Since Journey Start) (s",
+  "Trip Time (Whilst Moving) (s)",
+  "Trip Time (Whilst Stationary) (s)",
+  "Engine Coolant Temperature (°C)",
+  "Trip Average KPL (kpl)",
+  "O2 Volts Bank 1 Sensor 1 (V)",
+  "O2 Volts Bank 1 Sensor 2 (V)",
+  "Fuel Flow Rate/Hour (gal/hr)"
+)
+list_1 <- c("CO..in.g.km..Average..g.km.", "Trip.Distance.km",
+                 "Run.time.since.engine.start.s.", "Engine.Coolant.Temperature..C.",
+                 "Litres.Per.100.Kilometer.Long.Term.Average..l.100km.", "Trip.Time.Since.journey.start..s.",
+                 "Trip.time.whilst.moving..s.", "Trip.average.KPL.kpl.",
+                 "O2.Volts.Bank.1.sensor.1.V.", "O2.Volts.Bank.1.sensor.2.V.", "Fuel.flow.rate.hour.gal.hr.","Trip.time.whilst.stationary..s."
+                 )
+# Non-Trimmable Parameters
+non_trimmable_parameters <- c("Engine.kW..At.the.wheels..kW.", "Horsepower..At.the.wheels..hp.","Trip.average.Litres.100.KM.l.100km.","Absolute.Throttle.Position.B...","Relative.Throttle.Position...","Accelerator.PedalPosition.D...","Accelerator.PedalPosition.E...","Throttle.Position.Manifold....","Kilometers.Per.Litre.Instant..kpl.","Miles.Per.Gallon.Instant..mpg.","G.x.","Miles.Per.Gallon.Long.Term.Average..mpg.","Engine.RPM.rpm.","Intake.Air.Temperature..C.")
 
     
