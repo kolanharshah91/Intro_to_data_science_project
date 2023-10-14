@@ -1,0 +1,112 @@
+---
+title: "EDA_Analysis"
+output: html_document
+date: "2023-10-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Non-Trimmable Parameters
+
+Non-trimmable parameters, also known as fixed parameters or constants, are settings, configurations, or variables within a system, process, or software application that cannot be adjusted or fine-tuned by users or operators. These parameters are typically predetermined or hard-coded and remain constant throughout the operation of the system. Users or operators do not have the ability to modify these parameters to customize or optimize system behavior.
+
+1)Engine kW (At the wheels)(kW): This represents the power output of the engine that actually reaches the wheels. It helps in understanding how efficiently the engine is converting fuel into usable power for the vehicle's movement.
+
+**Analysis**:As per the per the boxplot observed, the variable 'Engine kW(At the wheels)(kW)' is aligned with the description.
+
+2)Horsepower..At.the.wheels..hp.: Similar to engine kW, this measures the power at the wheels, but it's in horsepower units. It gives an alternative measurement of the engine's output.
+
+**Analysis**: As per the boxplot observed, the variable 'Horsepower..At.the.wheels..hp.' is aligned with the description.  
+
+3)Average trip speed(whilst moving only)(km/h): This indicates the average speed of the vehicle when it's in motion. It helps in understanding how speed affects fuel efficiency.
+
+**Analysis**: As per the boxplot observed, the variable 'Average trip speed(whilst moving only)(km/h)' is not aligned with the description.  
+
+4)Trip average Litres/100 KM(l/100km): This shows how many liters of fuel are consumed to cover a distance of 100 kilometers. It's a direct measure of fuel efficiency.
+
+**Analysis**: As per the boxplot observed, the variable 'Trip average Litres/100 KM(l/100km)' is aligned with the description.
+
+5)Average trip speed (whilst stopped or moving)(km/h):
+
+**Analysis**: As per the boxplot observed, the variable 'Average trip speed (whilst stopped or moving)(km/h)' is not aligned with the description. 
+
+6)Absolute Throttle Position B(%): This is the percentage at which the throttle is open. It's important because it shows how much power the engine is producing relative to its maximum capacity.
+
+**Analysis**: As per the boxplot observed, the variable 'Absolute Throttle Position B(%)' is aligned with the description.
+
+7)Relative Throttle Position B(%): This is the percentage at which the throttle is open. It's important because it shows how much power the engine is producing relative to its maximum capacity.
+
+**Analysis**: As per the boxplot observed, the variable 'Relative Throttle Position B(%)' is aligned with the description.
+
+8)Accelerator Pedal Position D(%) and Accelerator Pedal Position E(%): These show the percentage of depression of the accelerator pedal. It helps in understanding driver behavior and how aggressively the vehicle is being driven.
+
+**Analysis**: As per the boxplot observed, the variable 'Accelerator Pedal Position D(%) and Accelerator Pedal Position E(%)' is aligned with the description.
+
+10)Engine Load (Absolute)(%):
+A higher engine load means the engine is working harder. While this might be necessary for tasks like climbing steep hills, it can lead to increased fuel consumption.
+
+**Analysis**: As per the boxplot observed, the variable 'Engine Load (Absolute)(%)' is aligned with the description.
+
+11 and 12)Fuel trim bank 1 sensor 1(%) and Fuel Trim Bank 1 Short Term(%):
+These values indicate adjustments made by the engine control unit to maintain the correct air-fuel mixture. Accurate mixture control is crucial for optimal combustion and fuel efficiency.
+
+**Analysis**: As per the boxplot observed, the variable 'Engine Load (Absolute)(%)' is not aligned with the description.
+
+13)"Throttle.Position.Manifold....":When the throttle is fully open (e.g., during hard acceleration), more air enters the engine, allowing it to burn more fuel to produce higher power and speed. This results in increased fuel consumption.
+
+**Analysis**: As per the boxplot observed, the variable 'Throttle.Position.Manifold....' is aligned with the description.
+
+14)Timing Advance(°):Timing Advance(°) refers to the adjustment of the ignition timing in an internal combustion engine. It represents the angle in degrees before top dead center (BTDC) at which the spark plug fires to ignite the air-fuel mixture in the engine cylinder.
+
+**Analysis**: As per the boxplot observed, the variable 'Timing Advance(°)' is not aligned with the description.
+
+15)Engine Load:
+
+A higher engine load means the engine is working harder. While this might be necessary for tasks like climbing steep hills, it can lead to increased fuel consumption.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'Engine Load' is  aligned with the description.
+
+16)Kilometers Per Litre(Instant)(kpl):
+When the kpl or mpg values are steeply decreasing, it means that the vehicle is consuming fuel at an accelerating rate for the same distance traveled. 
+
+**Analysis**: As per the boxplot observed, the variable 'Kilometers Per Litre(Instant)(kpl)' is  aligned with the description.
+
+17)Miles Per Gallon(Instant)(mpg): [Following,Ma]
+Steep and Decreasing Values: When the kpl or mpg values are steeply decreasing, it means that the vehicle is consuming fuel at an accelerating rate for the same distance traveled. This is a sign of poor fuel efficiency during the current driving conditions.
+
+**Analysis**: As per the boxplot observed, the variable 'Miles Per Gallon(Instant)(mpg)' is  aligned with the description.
+
+18 and 19)Intake Manifold Pressure(psi) and Turbo Boost & Vacuum Gauge(psi): These represent the pressure in the intake manifold and the boost pressure from a turbocharger. They are important for understanding how the engine is being fed air, which affects fuel consumption.
+
+Intake Manifold Pressure (psi) and Turbo Boost & Vacuum Gauge (psi):
+These values are related to the air supply to the engine. Higher pressures can improve combustion efficiency, but if excessive, it can lead to higher fuel consumption.[Not following]
+Analysis:In higher pressure the fuel consumption must be less due to the improvement in the combution efficiency,but the trend is not being followed here.
+
+**Analysis**: As per the boxplot observed, the variable 'Intake Manifold Pressure (psi) and Turbo Boost & Vacuum Gauge (psi)' is not aligned with the description.
+
+20)Bearing:Bearing often refers to the vehicle's orientation or direction in relation to the Earth's magnetic North. While bearing itself may not directly impact fuel consumption, it can be used in conjunction with other data to analyze driving patterns.{Does not directly affect fuel consumption, but it can be used with several other paraemeters to analyze driving patterns.] 
+
+21)G(x): Lateral acceleration (side-to-side movement).{Following a trend }
+Analysis:Cornering of automobile will need more power an d in turn will lead us to more fuel consumption.
+
+**Analysis**: As per the boxplot observed, the variable 'G(x): Lateral acceleration (side-to-side movement)' is  aligned with the description.
+
+22)G(y): when G(y) is increasing while fuel mass consumption is decreasing, it suggests that the vehicle is achieving better fuel efficiency by experiencing less deceleration and smoother acceleration. 
+
+23)G(z) is increasing while fuel consumption is decreasing, it suggests that the vehicle is achieving better fuel efficiency despite experiencing vertical acceleration nut the fuel consumption gets higher when it reaches the higher end of the G(y)->Higher upward movement.
+
+24)Miles Per Gallon(Long Term Average)(mpg):Miles Per Gallon (Long Term Average) (mpg) is a direct indicator of a vehicle's fuel efficiency over an extended period. Higher values represent better fuel efficiency and lower fuel mass consumption, while lower values indicate lower efficiency and higher fuel mass consumption.[Following but a slight inconsistency in the end]
+
+**Analysis**: As per the boxplot observed, the variable 'Miles Per Gallon(Long Term Average)(mpg)' is  aligned with the description.
+
+25)Engine RPM (rpm):
+Higher RPM usually indicates more power is being produced, which often requires more fuel. Maintaining a moderate RPM range can help optimize fuel consumption.[Following,But large devaition at the end]
+
+**Analysis**: As per the boxplot observed, the variable 'Engine RPM (rpm)' is  aligned with the description but with large deivation at the end.
+
+26)Intake Air Temperature (°C):
+Cooler air is denser and contains more oxygen, which can lead to better combustion efficiency. However, excessively cold air may require more fuel to maintain the proper air-fuel mixture.[Following]
+
+**Analysis**: As per the boxplot observed, the variable 'Intake Air Temperature (°C)' is  aligned with the description but with large deivation at the end.
