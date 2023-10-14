@@ -1,0 +1,323 @@
+---
+title: "Project_Non-trimmable_boxplots"
+output: html_document
+date: "2023-10-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(dplyr)
+```
+```{r}
+data_1 <- read.csv('dataset.csv', na.strings = "-")
+```
+```{r}
+time_check <- sum(!is.unsorted(data_1$` Device Time`))
+cat("Check for time with index: ", time_check, "\n")
+```
+
+```{r}
+missing_percentage <- colMeans(is.na(data_1))
+missing_data <- data.frame(Column = names(data_1), MissingPercentage = missing_percentage)
+print(missing_data)
+```
+```{r}
+col_names_list <- list(colnames(data_1))
+col_names_list[[1]]
+#print(col_names_list)
+```
+```{r}
+list_1 <- c("Torque.Nm", "CO..in.g.km..Average..g.km.", "Trip.Distance.km",
+                 "Run.time.since.engine.start.s.", "Fuel.cost..trip..cost.", "Engine.Coolant.Temperature..C.",
+                 "Litres.Per.100.Kilometer.Long.Term.Average..l.100km.", "Trip.Time.Since.journey.start..s.",
+                 "Trip.time.whilst.moving..s.", "Trip.average.KPL.kpl.", "Fuel.Trim.Bank.1.Long.Term...",
+                 "O2.Volts.Bank.1.sensor.1.V.", "O2.Volts.Bank.1.sensor.2.V.", "Fuel.flow.rate.hour.gal.hr.",
+                 "Fuel.flow.rate.minute.gal.min.", "Fuel.Remaining..Calculated.from.vehicle.profile....",
+                 "Horizontal.Dilution.of.Precision", "Acceleration.Sensor.Total..g.",
+                 "Acceleration.Sensor.X.axis..g.", "Acceleration.Sensor.Y.axis..g.",
+                 "Acceleration.Sensor.Z.axis..g.", "Speed..OBD..km.h.", "Trip.time.whilst.stationary..s.",
+                 "Fuel_mass")
+```
+```{r}
+list_2 <- c("Engine.kW..At.the.wheels..kW.", "Horsepower..At.the.wheels..hp.",
+                 "Average.trip.speed.whilst.moving.only..km.h.", "Trip.average.Litres.100.KM.l.100km.",
+                 "Average.trip.speed.whilst.stopped.or.moving..km.h.", "Absolute.Throttle.Position.B...","Relative.Throttle.Position...",
+                 "Accelerator.PedalPosition.D...","Accelerator.PedalPosition.E...","Engine.Load.Absolute....",
+                 "Fuel.trim.bank.1.sensor.1...","Fuel.Trim.Bank.1.Short.Term...",
+                 "Throttle.Position.Manifold....","Timing.Advance...",
+                 "Voltage..Control.Module..V.","Engine.Load...","Average.trip.speed.whilst.stopped.or.moving..km.h.","Kilometers.Per.Litre.Instant..kpl.",
+                 "Miles.Per.Gallon.Instant..mpg.","Intake.Manifold.Pressure.psi.","Turbo.Boost...Vacuum.Gauge.psi.",
+                 "Bearing","G.x.","G.y.","G.z.","G.calibrated.","Barometric.pressure..from.vehicle..psi.",
+                 "Kilometers.Per.Litre.Long.Term.Average..kpl.","Miles.Per.Gallon.Long.Term.Average..mpg.",
+                 "Engine.RPM.rpm.","Intake.Air.Temperature..C.")
+```
+###Parameters Discriptions¶
+Torque (Nm): Torque is a measure of the engine's rotational force. It is an important factor in determining the engine's performance and efficiency.
+
+CO₂ in g/km (Average): This column represents the average amount of carbon dioxide emissions produced per kilometer driven. It is a direct measure of the environmental impact of the engine's operation.
+
+Trip Distance (km): This is the total distance covered during a specific trip.
+
+Run Time Since Engine Start (s): It represents the duration for which the engine has been running since it was last started.
+
+Fuel Cost (Trip): This column represents the cost of the fuel consumed during a specific trip.
+
+Engine Coolant Temperature (°C): It indicates the temperature of the engine coolant, which is important for engine performance and efficiency.
+
+Litres Per 100 Kilometer (Long Term Average): This is a measure of fuel efficiency, representing the amount of fuel (in liters) consumed per 100 kilometers traveled.
+
+Trip Time (Since Journey Start) (s): It shows the total time elapsed since the start of the trip.
+
+Trip Time (Whilst Moving) (s): This is the total time during the trip when the vehicle was in motion.
+
+Trip Average KPL (kpl): This represents the average kilometers per liter of fuel consumed during the trip.
+
+Fuel Trim Bank 1 Long Term (%): Fuel trim is an adjustment made to the air-fuel mixture. This parameter indicates a long-term adjustment percentage for Bank 1.
+
+O2 Volts Bank 1 Sensor 1 (V): This is the voltage output of the first oxygen sensor in Bank 1.
+
+O2 Volts Bank 1 Sensor 2 (V): Similar to the previous parameter, but for the second oxygen sensor in Bank 1.
+
+Fuel Flow Rate/Hour (gal/hr): This represents the rate at which fuel is being consumed, measured in gallons per hour.
+
+Fuel Flow Rate/Minute (gal/min): Similar to the previous parameter, but measured in gallons per minute.
+
+Fuel Remaining (Calculated from Vehicle Profile) (%): This indicates the estimated remaining fuel percentage based on the vehicle's profile and usage.
+
+Horizontal Dilution of Precision: This is a measure of the quality of the GPS signal, which can affect the accuracy of distance measurements.
+
+Acceleration Sensor (Total) (g): It represents the total acceleration experienced by the vehicle, measured in 'g' units.
+
+Acceleration Sensor (X axis) (g): This is the acceleration experienced along the X axis (usually lateral or side-to-side movement).
+
+Acceleration Sensor (Y axis) (g): This is the acceleration experienced along the Y axis (usually longitudinal or front-to-back movement).
+
+Acceleration Sensor (Z axis) (g): This is the acceleration experienced along the Z axis (usually vertical movement).
+
+Speed (OBD) (km/h): This represents the vehicle's speed, as measured by the On-Board Diagnostics system.
+
+Trip Time (Whilst Stationary) (s): This is the total time during the trip when the vehicle was stationary.
+
+Engine kW (At the wheels)(kW): This represents the power output of the engine that actually reaches the wheels. It helps in understanding how efficiently the engine is converting fuel into usable power for the vehicle's movement.
+
+Horsepower (At the wheels)(hp): Similar to engine kW, this measures the power at the wheels, but it's in horsepower units. It gives an alternative measurement of the engine's output.
+
+Average trip speed(whilst moving only)(km/h): This indicates the average speed of the vehicle when it's in motion. It helps in understanding how speed affects fuel efficiency.
+
+Trip average Litres/100 KM(l/100km): This shows how many liters of fuel are consumed to cover a distance of 100 kilometers. It's a direct measure of fuel efficiency.
+
+Average trip speed(whilst stopped or moving)(km/h): This indicates the average speed of the vehicle including the time it's stopped. It helps in considering the effects of idling.
+
+Absolute Throttle Position B(%): This is the percentage at which the throttle is open. It's important because it shows how much power the engine is producing relative to its maximum capacity.
+
+Relative Throttle Position(%): This indicates the position of the throttle compared to its minimum and maximum limits. It helps in understanding how much power the engine is currently using.
+
+Accelerator Pedal Position D(%) and Accelerator Pedal Position E(%): These show the percentage of depression of the accelerator pedal. It helps in understanding driver behavior and how aggressively the vehicle is being driven.
+
+Engine Load(Absolute)(%): This represents the load on the engine, which is the amount of work it's doing. It's an important factor in fuel consumption because a heavily loaded engine may consume more fuel.
+
+Fuel trim bank 1 sensor 1(%) and Fuel Trim Bank 1 Short Term(%): These values indicate adjustments made by the engine control unit to the air-fuel mixture. They are important for optimizing fuel consumption.
+
+Throttle Position(Manifold)(%): This shows the position of the throttle in the manifold. It's important for understanding how the engine is controlling airflow, which affects fuel consumption.
+
+Timing Advance(°): This represents the timing of the ignition events in the engine. Proper timing is crucial for efficient combustion and fuel consumption.
+
+Voltage (Control Module)(V): This indicates the electrical voltage supplied to the control module. It's important for monitoring the electrical system, which indirectly affects fuel consumption.
+
+Kilometers Per Litre(Instant)(kpl) and Miles Per Gallon(Instant)(mpg): These values directly indicate the vehicle's fuel efficiency in terms of distance covered per unit of fuel.
+
+Intake Manifold Pressure(psi) and Turbo Boost & Vacuum Gauge(psi): These represent the pressure in the intake manifold and the boost pressure from a turbocharger. They are important for understanding how the engine is being fed air, which affects fuel consumption.
+
+Bearing, G(x), G(y), G(z), G(calibrated): These likely refer to measurements related to acceleration and orientation of the vehicle. They can provide insight into driving behavior and conditions affecting fuel consumption.
+
+Barometric pressure (from vehicle)(psi): This is the atmospheric pressure, which affects how much air the engine can take in. It's important for proper air-fuel mixture and combustion.
+
+Kilometers Per Litre(Long Term Average)(kpl) and Miles Per Gallon(Long Term Average)(mpg): These values represent the long-term average fuel efficiency of the vehicle, which gives a more stable indication of its overall efficiency.
+
+Engine RPM(rpm): This indicates how fast the engine is spinning. It's crucial for understanding engine performance and fuel consumption, as higher RPMs often mean higher fuel consumption.
+
+Intake Air Temperature(°C): This measures the temperature of the air entering the engine. Cooler air is denser, which can affect combustion efficiency and fuel consumption.
+
+###W.R.T Fuel Consumption 
+Torque (Nm): Higher torque can allow the engine to perform tasks with less effort, potentially leading to more efficient fuel consumption.
+
+CO₂ in g/km (Average): Lower emissions often correlate with better fuel efficiency, as it indicates that the engine is burning fuel more effectively.
+
+Trip Distance (km): Longer trips may lead to more consistent engine operation, potentially resulting in better fuel efficiency compared to many short trips.
+
+Run Time Since Engine Start (s): Engines tend to be less fuel-efficient during the first few minutes after start-up due to cold engine conditions.
+
+Fuel Cost (Trip): Monitoring fuel cost per trip can provide insights into how driving habits and conditions impact overall fuel consumption.
+
+Engine Coolant Temperature (°C): A properly warmed-up engine (within optimal temperature range) tends to operate more efficiently, leading to better fuel economy.
+
+Litres Per 100 Kilometer (Long Term Average): Lower liters per 100 kilometers indicates higher fuel efficiency.
+
+Trip Time (Since Journey Start) (s): Longer trips may lead to more efficient engine operation compared to numerous short trips.
+
+Trip Time (Whilst Moving) (s): Longer durations of movement can lead to more consistent engine operation, potentially resulting in better fuel efficiency.
+
+Trip Average KPL (kpl): Higher average kilometers per liter indicates better fuel efficiency.
+
+Fuel Trim Bank 1 Long Term (%): Proper fuel trim adjustments are crucial for maintaining optimal air-fuel ratios and fuel efficiency.
+
+O2 Volts Bank 1 Sensor 1 (V): This sensor provides feedback on the air-fuel mixture. Proper mixture leads to better fuel economy.
+
+O2 Volts Bank 1 Sensor 2 (V): Similar to the first oxygen sensor, this feedback helps maintain proper air-fuel mixture for better fuel economy.
+
+Fuel Flow Rate/Hour (gal/hr): Monitoring fuel flow rate helps identify anomalies that may indicate inefficiencies or problems affecting fuel consumption.
+
+Fuel Flow Rate/Minute (gal/min): Similar to the above, this provides a finer-grained look at fuel consumption.
+
+Fuel Remaining (Calculated from Vehicle Profile) (%): Knowing how much fuel remains helps in planning trips and optimizing routes for better fuel efficiency.
+
+Horizontal Dilution of Precision: A more accurate GPS signal can help optimize routes and driving behavior for improved fuel economy.
+
+Acceleration Sensor (Total) (g): Aggressive driving with rapid acceleration can lead to higher fuel consumption.
+
+Acceleration Sensor (X axis) (g): Lateral accelerations can be indicative of aggressive cornering, potentially leading to higher fuel consumption.
+
+Acceleration Sensor (Y axis) (g): Longitudinal accelerations can indicate rapid acceleration or deceleration, affecting fuel consumption.
+
+Acceleration Sensor (Z axis) (g): Vertical accelerations may indicate rough or uneven driving conditions, potentially affecting fuel economy.
+
+Speed (OBD) (km/h): Higher speeds generally lead to increased air resistance, which can significantly impact fuel consumption.
+
+Trip Time (Whilst Stationary) (s): Idling for extended periods can lead to unnecessary fuel consumption and reduced overall efficiency.
+
+Engine kW (At the wheels)(kW) and Horsepower (At the wheels)(hp):
+
+These represent the power output that actually propels the vehicle. Higher power means more energy is being used, which can lead to higher fuel consumption. It's important to strike a balance between power and efficiency.
+
+Average trip speed (whilst moving only)(km/h) and Average trip speed (whilst stopped or moving)(km/h):
+
+Speed significantly affects fuel consumption. Higher speeds usually lead to higher aerodynamic drag and increased resistance, which means the engine has to work harder and use more fuel.
+
+Trip average Litres/100 KM (l/100km):
+
+This is a direct measure of fuel efficiency. Lower values indicate better efficiency, while higher values suggest more fuel is being consumed for the distance covered.
+
+Absolute Throttle Position B(%), Relative Throttle Position(%), Accelerator Pedal Position D(%), Accelerator Pedal Position E(%):
+
+These factors relate to how the driver controls the engine's power. Aggressive acceleration and high throttle positions generally lead to higher fuel consumption, as more fuel is injected to produce the desired power.
+
+Engine Load (Absolute)(%):
+
+A higher engine load means the engine is working harder. While this might be necessary for tasks like climbing steep hills, it can lead to increased fuel consumption.
+
+Fuel trim bank 1 sensor 1(%) and Fuel Trim Bank 1 Short Term(%):
+These values indicate adjustments made by the engine control unit to maintain the correct air-fuel mixture. Accurate mixture control is crucial for optimal combustion and fuel efficiency.
+
+Throttle Position (Manifold)(%) and Timing Advance(°):
+They relate to how the engine manages air and spark timing. Proper control of these factors ensures efficient combustion, directly affecting fuel consumption.
+
+Voltage (Control Module)(V):
+The voltage supplied to the control module affects the performance of various systems, including those related to fuel injection and ignition timing. Stable voltage levels are important for consistent and efficient engine operation.
+
+Kilometers Per Litre (Instant)(kpl) and Miles Per Gallon (Instant)(mpg), Kilometers Per Litre (Long Term Average)(kpl) and Miles Per Gallon (Long Term Average)(mpg):
+These directly measure fuel efficiency and provide real-time and long-term averages. Lower values indicate higher fuel consumption.
+
+Intake Manifold Pressure (psi) and Turbo Boost & Vacuum Gauge (psi):
+These values are related to the air supply to the engine. Higher pressures can improve combustion efficiency, but if excessive, it can lead to higher fuel consumption.
+
+Bearing, G(x), G(y), G(z), G(calibrated):
+These measurements pertain to acceleration and orientation. Rapid acceleration or sharp turns can lead to higher fuel consumption due to increased engine load.
+
+Barometric pressure (from vehicle)(psi):
+This affects the density of the air entering the engine. Changes in atmospheric pressure can alter the air-fuel mixture and influence combustion efficiency.
+
+Engine RPM (rpm):
+Higher RPM usually indicates more power is being produced, which often requires more fuel. Maintaining a moderate RPM range can help optimize fuel consumption.
+
+Intake Air Temperature (°C):
+Cooler air is denser and contains more oxygen, which can lead to better combustion efficiency. However, excessively cold air may require more fuel to maintain the proper air-fuel mixture.
+
+```{r}
+library(ggplot2)
+# Define the label
+label <- 'Fuel_mass'
+
+# Create a histogram using ggplot
+ggplot(data_1, aes(x = as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]]))))) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(x = label, y = "Frequency") +
+  theme_minimal()
+
+# Print the minimum and maximum values
+cat("Minimum Value:", min(as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]])))), "\n")
+cat("Maximum Value:", max(as.numeric(ifelse(is.na(data_1[[label]]), 0, as.character(data_1[[label]])))), "\n")
+```
+
+
+```{r}
+
+colnames(data_1)
+```
+
+
+
+
+```{r}
+# library
+library(ggplot2)
+library(dplyr)
+library(hrbrthemes)
+
+# Start with your dataset 'datset'
+datset <- data_1
+varaiable <- "Engine.kW..At.the.wheels..kW."
+p <- datset %>%
+  mutate(!!sym(varaiable) := ifelse(is.na(!!sym(varaiable)), 0, !!sym(varaiable))) %>%
+  mutate(bin = cut(!!sym(varaiable), breaks = 4)) %>%
+  ggplot(aes(x = bin, y = Fuel_mass)) +
+  geom_boxplot(fill = "blue") +
+  theme_minimal() +
+  xlab("Engine.kW..At.the.wheels..kW. Bins")
+
+# Show the plot
+print(p)
+```
+```{r}
+column_names <- names(data_1)
+column_names
+```
+```{r}
+# Create a vector containing the column names you want to process
+columns_to_process <- c("Engine.kW..At.the.wheels..kW.", "Horsepower..At.the.wheels..hp.","Average.trip.speed.whilst.moving.only..km.h.","Trip.average.Litres.100.KM.l.100km.","Average.trip.speed.whilst.stopped.or.moving..km.h.","Absolute.Throttle.Position.B...","Relative.Throttle.Position...","Accelerator.PedalPosition.D...","Accelerator.PedalPosition.E...","Engine.Load.Absolute....","Fuel.trim.bank.1.sensor.1...","Fuel.Trim.Bank.1.Short.Term...","Throttle.Position.Manifold....","Timing.Advance...","Voltage..Control.Module..V.","Engine.Load...","Average.trip.speed.whilst.stopped.or.moving..km.h.","Kilometers.Per.Litre.Instant..kpl.","Miles.Per.Gallon.Instant..mpg.","Intake.Manifold.Pressure.psi.","Turbo.Boost...Vacuum.Gauge.psi.","Bearing","G.x.","G.y.","G.z.","G.calibrated.","Barometric.pressure..from.vehicle..psi.","Kilometers.Per.Litre.Long.Term.Average..kpl.","Miles.Per.Gallon.Long.Term.Average..mpg.","Engine.RPM.rpm.","Intake.Air.Temperature..C.")
+
+# Create an empty list to store the plots
+plot_list <- list()
+dataset <- data_1
+# Loop through the vector of column names
+for (variable in columns_to_process) {
+  
+  # Replace NA with zero in the dataset for the current column
+  dataset <- dataset %>%
+    mutate(!!sym(variable) := ifelse(is.na(!!sym(variable)), 0, !!sym(variable))) 
+  
+  # Create bins for the current column
+  dataset <- dataset %>%
+    mutate(bin = cut(!!sym(variable), breaks = 4))
+  
+  # Create a boxplot for the current column
+  p <- ggplot(data = dataset, aes(x = bin, y = Fuel_mass)) +
+    geom_boxplot(fill = "#69b3a2") +
+    theme_minimal() +
+    xlab(variable)
+  
+  # Store the plot in the list
+  plot_list[[variable]] <- p
+}
+
+# Print or display the plots from the list
+for (i in 1:length(plot_list)) {
+  print(plot_list[[i]])
+}
+
+
+```
