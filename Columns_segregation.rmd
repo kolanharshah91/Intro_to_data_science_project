@@ -191,22 +191,6 @@ non_trimmable_parameters <- c('GPS_Time',
                               'Voltage_(Control_Module)(V)',
                               'Voltage_(OBD_Adapter)(V)'
                               )
-
-# Trimmable Parameters
-trimmable_parameters <- c(
-  "CO₂ in g/km (Average)",
-  "Trip Distance (km)",
-  "Run Time Since Engine Start (s)",
-  "Trip Time (Since Journey Start) (s",
-  "Trip Time (Whilst Moving) (s)",
-  "Trip Time (Whilst Stationary) (s)",
-  "Engine Coolant Temperature (°C)",
-  "Trip Average KPL (kpl)",
-  "O2 Volts Bank 1 Sensor 1 (V)",
-  "O2 Volts Bank 1 Sensor 2 (V)",
-  "Fuel Flow Rate/Hour (gal/hr)"
-)
-
 # The parameters which are following the description:
 
 following_parameters <- c("CO..in.g.km..Average..g.km.", "Trip.Distance.km",
