@@ -128,7 +128,7 @@ for (i in 2:10) {
   silhouette[i] <- silhouette(kmeans_result1$cluster, dist(data_for_clustering))
 }
 plot(2:10, silhouette[2:10], type="b", xlab="Number of Clusters (k)", ylab="Silhouette Score")
-kmeans_result <- kmeans(scaled_data, centers = 6, nstart = 20)
+kmeans_result <- kmeans(scaled_data, centers = 5, nstart = 20)
 
 df1$cluster <- kmeans_result$cluster
 
@@ -141,6 +141,10 @@ data_pre$cluster <- as.character(df1$cluster)
 
 #data_pre$cluster
 
+```
+
+```{r}
+print(cluster_counts)
 ```
 
 ```{r}
@@ -192,4 +196,59 @@ ggplot(data_pre,aes(x=Fuel_mass,y=cluster)) + geom_boxplot(fill = "#66c2a5", col
   theme_minimal() 
 cache=FALSE
 ```
+
+```{r}
+library(ggplot2)
+ggplot(data_pre,aes(x=CO..in.g.km..Average..g.km.,y=cluster)) + geom_boxplot(fill = "#66c2a5", color = "#7570b3") + 
+  labs(title = "Fuel Mass across the Clusters",
+       x = "CO..in.g.km..Average..g.km.",
+       y = "Cluster") +  
+  theme_minimal() 
+cache=FALSE
+```
+
+```{r}
+for (cluster_id in unique(data_pre$cluster))
+  print(cluster_id)
+```
+
+```{r}
+ci_list <- list()
+confidence_level <- 0.95
+
+# Split the data by cluster and calculate confidence intervals of CO2 for each cluster
+for (cluster_id in unique(data_pre$cluster)) {
+  subset_data <- data_pre[data_pre$cluster == cluster_id, ]
+  
+  t_test_result <- t.test(subset_data$CO..in.g.km..Average..g.km., conf.level = confidence_level)
+  ci <- t_test_result$conf.int
+
+  ci_list[[as.character(cluster_id)]] <- ci
+}
+print(ci_list)
+```
+
+```{r}
+# Create a data frame for the bar plot
+ci_df <- data.frame(
+  Cluster = as.numeric(names(ci_list)),
+  Lower = sapply(ci_list, "[[", 1),
+  Upper = sapply(ci_list, "[[", 2)
+)
+
+# Load the ggplot2 library if not already loaded
+library(ggplot2)
+
+# Create a bar plot with confidence intervals
+ggplot(ci_df, aes(x = factor(Cluster), y = (Lower + Upper) / 2)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.2) +
+  labs(
+    title = "CO2 Emissions Confidence Intervals by Cluster",
+    x = "Cluster",
+    y = "Mean CO2 Emissions (g/km)"
+  ) +
+  theme_minimal()
+```
+
 
