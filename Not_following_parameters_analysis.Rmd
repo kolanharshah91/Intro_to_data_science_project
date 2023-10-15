@@ -1,0 +1,25 @@
+---
+title: 'Not_following_Parmeters_Analysis'
+output: html_document
+date: "2023-10-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Paremeters Not Following
+
+1)Average trip speed(whilst moving only)(km/h): This indicates the average speed of the vehicle when it's in motion. It helps in understanding how speed affects fuel efficiency.
+
+Speed significantly affects fuel consumption. Higher speeds usually lead to higher aerodynamic drag and increased resistance, which means the engine has to work harder and use more fuel.[Not Following]
+
+**Final Analysis**: By our analysis , the fuel consumption has to be increasing but in this case, its not. Following the trend till the third cluster and decreases for the fourth cluster.
+
+2 and 3)Intake Manifold Pressure(psi) and Turbo Boost & Vacuum Gauge(psi): These represent the pressure in the intake manifold and the boost pressure from a turbocharger. They are important for understanding how the engine is being fed air, which affects fuel consumption.
+
+Intake Manifold Pressure (psi) and Turbo Boost & Vacuum Gauge (psi):
+These values are related to the air supply to the engine. Higher pressures can improve combustion efficiency, but if excessive, it can lead to higher fuel consumption.[Not following]
+
+**Final Analysis**:In higher pressure the fuel consumption must be less due to the improvement in the combution efficiency,but the trend is not being followed here.The reason being the fuel consumption is just increasing whereas as per the description both(Intake Manifold Pressure (psi) and Turbo Boost & Vacuum Gauge (psi)) clusters progressively are supposed to improve fuel consumption which is not the case here.
+
