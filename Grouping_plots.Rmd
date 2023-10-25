@@ -1,0 +1,166 @@
+---
+title: "Grouping_plots"
+output: html_document
+date: "2023-10-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+data_pre = read.csv('dataset.csv')
+data_pre$Cluster = as.character(data_pre$Cluster)
+str(data_pre)
+```
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+library(dplyr)
+```
+
+```{r}
+plot_four_graphs <- function(data_pre, variable, recomm_cluster) {
+  
+  # 1st Graph
+  plot1 <- ggplot(data_pre, aes(x = Fuel_mass, y = Cluster)) +
+    geom_boxplot(fill = "#66c2a5", color = "#7570b3") +
+    labs(
+      title = "Fuel Mass across the Clusters",
+      x = "Fuel Mass",
+      y = "Cluster"
+    ) +
+    theme_minimal()
+  
+  # 2nd Graph
+  plot2 <- ggplot(data_pre, aes(x = data_pre[[variable]], y = Cluster)) +
+    geom_boxplot(fill = "#66c2a5", color = "#7570b3") +
+    labs(
+      title = variable,
+      x = variable,
+      y = "Cluster"
+    ) +
+    theme_minimal()
+  
+  # 3rd Graph
+  data_pre_c <- data_pre[data_pre$Cluster == recomm_cluster | data_pre$Cluster == "5",]
+
+  # Density Plot
+  plot3 <- ggplot(data_pre_c, aes(x = data_pre_c[[variable]], fill = Cluster)) +
+    geom_density(alpha = 0.4) +
+    labs(
+      title = paste("Density Plots across Clusters"),
+      x = variable,
+      y = "Density"
+    ) +
+    theme_minimal()
+  
+  ci_list <- list()
+  confidence_level <- 0.95
+  
+  for (cluster_id in unique(data_pre$Cluster)) {
+    subset_data <- data_pre[data_pre$Cluster == cluster_id, ]
+    
+    t_test_result <- t.test(subset_data[[variable]], conf.level = confidence_level)
+    ci <- t_test_result$conf.int
+  
+    ci_list[[as.character(cluster_id)]] <- ci
+  }
+  print(ci_list)
+  
+  # 4th Graph
+  ci_df <- data.frame(
+    Cluster = as.numeric(names(ci_list)),
+    Lower = sapply(ci_list, "[[", 1),
+    Upper = sapply(ci_list, "[[", 2)
+  )
+  plot4 <- ggplot(ci_df, aes(x = factor(Cluster), y = (Lower + Upper) / 2)) +
+    geom_point(size = 3) +
+    geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.2) +
+    labs(
+      title = "Confidence Intervals by Clusters",
+      x = "Cluster",
+      y = variable
+    ) +
+    theme_minimal()
+  
+  # Arrange the four plots in a 2x2 grid
+  grid.arrange(plot1, plot2, plot3, plot4, ncol = 2)
+}
+
+```
+
+```{r} 
+# Testing
+variable = "Engine.Coolant.Temperature..C."
+recomm_cluster = "2"
+```
+
+```{r}
+# Testing
+data_pre_c <- data_pre[data_pre$Cluster == recomm_cluster | data_pre$Cluster == "5",]
+
+# Density Plot
+plot3 <- ggplot(data_pre_c, aes(x = data_pre_c[[variable]], fill = Cluster)) +
+  geom_density(alpha = 0.4) +
+  labs(
+    title = paste("Density Plot of", variable, "across Clusters 2 and 5"),
+    x = variable,
+    y = "Density"
+  ) +
+  theme_minimal()
+
+# Print the density plot
+print(plot3)
+```
+
+
+```{r}
+# Calling the function for a group of variables
+
+variables <- c("Engine.Coolant.Temperature..C.", "CO..in.g.km..Average..g.km.", "Intake.Air.Temperature..C.", "Trip.average.Litres.100.KM.l.100km.", "Trip.average.KPL.kpl.", "Absolute.Throttle.Position.B...", "Relative.Throttle.Position...", "Throttle.Position.Manifold....", "Accelerator.PedalPosition.D...", "Accelerator.PedalPosition.E...")
+recomm_cluster_mapping <- list(
+  "Engine.Coolant.Temperature..C." = "2",
+  "CO..in.g.km..Average..g.km." = "2",
+  "Intake.Air.Temperature..C." = "1",
+  "Trip.average.Litres.100.KM.l.100km." = "2",
+  "Trip.average.KPL.kpl." = "3",
+  "Absolute.Throttle.Position.B..." = "4",
+  "Relative.Throttle.Position..." = "4",
+  "Throttle.Position.Manifold...." = "4",
+  "Accelerator.PedalPosition.D..." = "4",
+  "Accelerator.PedalPosition.E..." = "4"
+)
+
+for (variable in variables) {
+  recomm_cluster <- recomm_cluster_mapping[variable]
+  
+  plot_four_graphs(data_pre, variable, recomm_cluster)
+}
+```
+
+
+
+
+
