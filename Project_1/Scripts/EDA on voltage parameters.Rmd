@@ -1,0 +1,127 @@
+---
+title: "Voltage Related Columns"
+output: html_document
+date: "2023-10-24"
+---
+```{r}
+data1=read.csv("C:/Users/KDIVA/OneDrive/Desktop/Intro_to_data_science_project/dataset.csv")
+colnames(data1)
+```
+```{r}
+data1$Cluster=as.factor(data1$Cluster)
+library(ggplot2)
+ggplot(data1, aes(x = Fuel_mass, y = Cluster)) +
+  geom_boxplot(fill = "#66c2a5", color = "#7570b3") +
+  labs(title = "Fuel Mass Distribution by Cluster", x = "Fuel Mass", y = "Cluster")
+```
+
+
+
+Clusters- 1,2 and 3 are similar. The analysis would be done such that the driver should avoid cluster 5 as it has the highest fuel mass consumption. 
+
+
+
+O2 Volts Bank 1 Sensor 1 (V): 
+
+This is the voltage output of the first oxygen sensor in Bank 1.
+
+
+W.R.T Fuel Consumption: 
+
+This sensor provides feedback on the air-fuel mixture. Proper mixture leads to better fuel economy. The mixture should not be too lean or too rich.
+
+
+
+```{r}
+ggplot(data1, aes(x = O2.Volts.Bank.1.sensor.1.V., y = Cluster)) +
+  geom_boxplot(fill = "#66c2a5", color = "#7570b3") +
+  labs(title = "O2 Volts Bank 1 Sensor 1 (V) Distribution by Cluster", x = "O2 Volts Bank 1 Sensor 1 (V)", y = "Cluster")
+```
+```{r}
+
+
+ci_list <- list()
+
+for (cluster_id in unique(data1$Cluster)) {
+  subset_data <- data1[data1$Cluster == cluster_id, ]
+  ci <- t.test(subset_data$O2.Volts.Bank.1.sensor.1.V.)
+  ci_list[[as.character(cluster_id)]] <- ci$conf.int
+}
+
+print(ci_list)
+
+```
+```{r}
+data_o2_sen1 <- data1[data1$Cluster == "4" | data1$Cluster == "5",]
+ggplot(data_o2_sen1, aes(x = O2.Volts.Bank.1.sensor.1.V., fill = Cluster)) +
+  geom_histogram(position = "identity", alpha = 0.4)
+
+```
+
+
+
+There is no clear right or left shift. So, we bifercated the column into greater than 0.45 and less than 0.45 to do further analysis.
+
+
+
+```{r}
+
+less_than_045 <- subset(data1, O2.Volts.Bank.1.sensor.1.V. < 0.45)
+
+
+
+ci_list <- list()
+
+for (cluster_id in unique(less_than_045$Cluster)) {
+  subset_data <- less_than_045[less_than_045$Cluster == cluster_id, ]
+  ci <- t.test(subset_data$O2.Volts.Bank.1.sensor.1.V.)
+  ci_list[[as.character(cluster_id)]] <- ci$conf.int
+}
+
+print(ci_list)
+```
+```{r}
+data_o2_lower <- less_than_045[less_than_045$Cluster == "1" | less_than_045$Cluster == "5",]
+ggplot(data_o2_lower, aes(x = O2.Volts.Bank.1.sensor.1.V., fill = Cluster)) +
+  geom_histogram(position = "identity", alpha = 0.4)
+
+
+```
+
+
+
+Observation:
+
+There is a right shift from cluster 5[C.I -0.10 to 0.13] to cluster 1[C.I -0.11 to 0.15]
+
+
+
+
+```{r}
+greater_than_045 <- subset(data1, O2.Volts.Bank.1.sensor.1.V. > 0.45)
+
+
+
+ci_list <- list()
+
+for (cluster_id in unique(greater_than_045$Cluster)) {
+  subset_data <- greater_than_045[greater_than_045$Cluster == cluster_id, ]
+  ci <- t.test(subset_data$O2.Volts.Bank.1.sensor.1.V.)
+  ci_list[[as.character(cluster_id)]] <- ci$conf.int
+}
+
+print(ci_list)
+```
+```{r}
+data_o2_upper <- greater_than_045[greater_than_045$Cluster == "4" | greater_than_045$Cluster == "5",]
+ggplot(data_o2_upper, aes(x = O2.Volts.Bank.1.sensor.1.V., fill = Cluster)) +
+  geom_histogram(position = "identity", alpha = 0.4)
+
+```
+
+
+
+
+Observation:
+
+There is a left shift from cluster 5[C.I -0.80 to 0.83] to cluster 4[C.I -0.79 to 0.81]. We can say that the column O2 Volts Bank 1 Sensor 1 is not a signifiant factor which affects Fuel consumption.

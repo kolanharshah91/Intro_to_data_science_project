@@ -1,0 +1,195 @@
+---
+title: "Clustering analysis"
+
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: false
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+---
+
+
+  
+```{r init, include=F}
+rm(list=ls())
+# The package "ezids" (EZ Intro to Data Science) includes some helper functions we developed for the course. 
+# Some of the frequently used functions are loadPkg(), xkabledply(), xkablesummary(), uzscale(), etc.
+# You will need to install it (once) from GitHub.
+# library(devtools)
+# devtools::install_github("physicsland/ezids")
+# Then load the package in your R session.
+library(ezids)
+```
+
+
+
+library(dplyr)
+```{r}
+df <- read.csv("dataset.csv",header = TRUE)
+df[df == "-"] <- NaN
+colnames(df)
+
+```
+```{r}
+#install.packages("magrittr") # package installations are only needed the first time you use it
+#install.packages("dplyr")    
+library(magrittr) 
+library(dplyr)
+
+#colnames(data)
+
+#str(data)
+
+
+cols_needed = c("Torque.Nm.", "CO..in.g.km..Average..g.km.", "Trip.Distance.km.", 
+                "Run.time.since.engine.start.s.", "Fuel.cost..trip..cost.", "Engine.Coolant.Temperature..C.", 
+                "Litres.Per.100.Kilometer.Long.Term.Average..l.100km.", "Trip.Time.Since.journey.start..s.", 
+                "Trip.time.whilst.moving..s.", "Trip.average.KPL.kpl.", "Fuel.Trim.Bank.1.Long.Term...", 
+                "O2.Volts.Bank.1.sensor.1.V.", "O2.Volts.Bank.1.sensor.2.V.", "Fuel.flow.rate.hour.gal.hr.", 
+                "Fuel.flow.rate.minute.gal.min.", "Fuel.Remaining..Calculated.from.vehicle.profile....", 
+                "Horizontal.Dilution.of.Precision", "Acceleration.Sensor.Total..g.", 
+                "Acceleration.Sensor.X.axis..g.", "Acceleration.Sensor.Y.axis..g.", 
+                "Acceleration.Sensor.Z.axis..g.", "Speed..OBD..km.h.", "Trip.time.whilst.stationary..s.",
+                "Fuel_mass", "Engine.kW..At.the.wheels..kW.", "Horsepower..At.the.wheels..hp.", 
+                "Average.trip.speed.whilst.moving.only..km.h.", "Trip.average.Litres.100.KM.l.100km.", 
+                "Average.trip.speed.whilst.stopped.or.moving..km.h.", "Absolute.Throttle.Position.B...", 
+                "Relative.Throttle.Position...", "Accelerator.PedalPosition.D...", "Accelerator.PedalPosition.E...", 
+                "Engine.Load.Absolute....", "Fuel.trim.bank.1.sensor.1...","Fuel.Trim.Bank.1.Short.Term...", 
+                "Throttle.Position.Manifold....", "Timing.Advance...", "Voltage..Control.Module..V.", "Engine.Load...",
+                "Kilometers.Per.Litre.Instant..kpl.", "Miles.Per.Gallon.Instant..mpg.", "Intake.Manifold.Pressure.psi.", 
+                "Turbo.Boost...Vacuum.Gauge.psi.", "Bearing", "G.x.", "G.y.", "G.z.", "G.calibrated.", 
+                "Barometric.pressure..from.vehicle..psi.", "Kilometers.Per.Litre.Long.Term.Average..kpl.", 
+                "Miles.Per.Gallon.Long.Term.Average..mpg.", "Engine.RPM.rpm.", "Intake.Air.Temperature..C.")
+
+time_col = 'GPS Time'
+time_factor = '1min'
+
+class(df)
+data_pre <- df %>% select(all_of(cols_needed)) %>% mutate(across(everything(), as.numeric))
+
+```
+```{r}
+#install.packages("dplyr") 
+library(lubridate)
+
+
+# Extract the timezone offset
+timezone_offset <- gsub(".*GMT([+-]\\d{2}:\\d{2}).*", "\\1", df$GPS.Time)
+
+df$GPS.Time <- gsub("GMT", "", df$GPS.Time)
+
+# Convert character to datetime
+df$GPS.Time <- parse_date_time(df$GPS.Time, "%a %b %d %H:%M:%S %z %Y")
+
+#str(data)
+data_pre$GPS.Time=df$GPS.Time
+cache=FALSE
+```
+
+```{r}
+library(Rtsne)
+
+
+X <- data_pre[, !colnames(data_pre) %in% "GPS Time"]
+X[is.na(X)] <- 0
+
+# Perform t-SNE
+tsne_result <- Rtsne(X, dims = 2, perplexity = 3, theta = 0.5, check_duplicates = FALSE)
+
+X_embedded <- tsne_result$Y
+
+df1 <- data.frame(x = X_embedded[, 1], y = X_embedded[, 2])
+
+
+
+```
+
+```{r}
+library(stats)
+
+
+data_for_clustering <- df1[, c("x", "y")]
+#str(data_for_clustering)
+
+scaled_data <- scale(data_for_clustering)
+set.seed(123)
+
+#To get optimal number of clusters
+library(cluster)
+silhouette <- numeric(10)
+for (i in 2:10) {
+  kmeans_result1 <- kmeans(data_for_clustering, centers = i, nstart = 20)
+  silhouette[i] <- silhouette(kmeans_result1$cluster, dist(data_for_clustering))
+}
+plot(2:10, silhouette[2:10], type="b", xlab="Number of Clusters (k)", ylab="Silhouette Score")
+kmeans_result <- kmeans(scaled_data, centers = 6, nstart = 20)
+
+df1$cluster <- kmeans_result$cluster
+
+
+cluster_counts <- table(df1$cluster)
+
+
+print(cluster_counts)
+data_pre$cluster <- as.character(df1$cluster)
+
+#data_pre$cluster
+
+```
+
+```{r}
+library(dplyr)
+
+# Calculate Mean
+mean_result <- data_pre %>%
+  group_by(cluster) %>%
+  summarise(mean_Fuel_mass = mean(Fuel_mass,na.rm = TRUE))
+
+
+# Calculate Median
+median_result <- data_pre %>%
+  group_by(cluster) %>%
+  summarise(median_Fuel_mass = median(Fuel_mass,na.rm = TRUE))
+
+# Calculate Standard Deviation
+std_dev_result <- data_pre %>%
+  group_by(cluster) %>%
+  summarise(Std_Fuel_mass = sd(Fuel_mass,na.rm = TRUE))
+cache=FALSE
+```
+
+```{r}
+print("Mean")
+print(mean_result)
+cat("\n")
+cache=FALSE
+```
+
+```{r}
+print("Median")
+print(median_result)
+cat("\n")
+cache=FALSE
+```
+
+```{r}
+print("Standard Deviation")
+print(std_dev_result)
+cache=FALSE
+```
+```{r}
+library(ggplot2)
+ggplot(data_pre,aes(x=Fuel_mass,y=cluster)) + geom_boxplot(fill = "#66c2a5", color = "#7570b3") + 
+  labs(title = "Fuel Mass across the Clusters",
+       x = "Fuel Mass",
+       y = "Cluster") +  
+  theme_minimal() 
+cache=FALSE
+```
+
