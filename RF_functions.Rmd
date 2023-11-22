@@ -1,0 +1,148 @@
+---
+title: "project_2"
+output: html_document
+date: "2023-10-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(randomForest)
+library(caret)
+library(car)
+```
+
+```{r}
+temp <- read.csv('temps.csv')
+```
+
+```{r}
+str(temp)
+```
+
+```{r}
+df <- temp[, !(names(temp) == "week")]
+```
+
+```{r}
+str(df)
+```
+
+```{r}
+# Function for splitting data
+split_data <- function(data, y_label, test_size = 0.2) {
+  set.seed(123)  # For reproducibility
+  inx <- createDataPartition(data[[y_label]], p = 1 - test_size, list = FALSE)
+  training_data <- data[inx, ]
+  testing_data <- data[-inx, ]
+  
+  return(list(training_data = training_data, testing_data = testing_data))
+}
+```
+
+
+```{r}
+# Function for training a model
+# train_model <- function(training_data, y_label) {
+  # formula <- as.formula(paste(y_label, "~ ."))
+  # model <- randomForest(
+    # formula = formula,
+    # data = training_data
+  # )
+  
+  # return(model)
+# }
+```
+
+```{r}
+train_model <- function(training_data, y_label) {
+  formula <- as.formula(paste(y_label, "~ ."))
+  
+  param_grid <- expand.grid(
+    mtry = c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20),
+    ntree = c(100, 200, 300, 400, 500, 600, 700, 1000)
+  )
+  
+  # Create a tuning grid using trainControl
+  ctrl <- trainControl(method = "cv", number = 5)
+  
+  # Train the model with hyperparameter tuning
+  model <- randomForest(
+    formula = formula,
+    data = training_data,
+    trControl = ctrl,
+    tuneGrid = param_grid
+  )
+}
+```
+
+```{r}
+# Function for testing and calculating metrics
+test_metrics <- function(model, testing_data, y_label) {
+  predictions <- predict(model, newdata = testing_data)
+  
+  RMSE_val <- sqrt(mean((predictions - testing_data[[y_label]])^2))
+  print(RMSE_val)
+  Rsquare_val <- cor(predictions, testing_data[[y_label]])^2
+  print(Rsquare_val)
+  
+  # vif_val <- vif(lm(as.formula(paste(y_label, "~ .")), data = testing_data))
+  
+  # metrics <- list(RMSE = RMSE_val, R_square = Rsquare_val, VIF = vif_val)
+  metrics <- list(RMSE = RMSE_val, R_square = Rsquare_val)
+  
+  return(metrics)
+}
+```
+
+```{r}
+# Function to perform regression analysis using the above three functions
+perform_regression <- function(data, y_label, test_size = 0.2) {
+  # Fine-tuning data
+  split_data <- split_data(data, y_label, test_size)
+  training_data <- split_data$training_data
+  testing_data <- split_data$testing_data
+  
+  # Training the model
+  model <- train_model(training_data, y_label)
+  print(summary(model))
+  # Testing and calculating metrics
+  metrics <- test_metrics(model, testing_data, y_label)
+  
+  return(metrics)
+}
+```
+
+
+```{r}
+# Example usage:
+#data(mtcars)  # Loading mtcars dataset
+```
+
+```{r}
+# Example usage:
+data(swiss)
+str(swiss)
+```
+
+```{r}
+# Example usage:
+result <- perform_regression(df, "actual")
+print(result)
+```
+
+```{r}
+result <- perform_regression(swiss, "Infant.Mortality")
+print(result)
+```
+
+
+
